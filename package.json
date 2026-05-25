@@ -1,0 +1,38 @@
+{
+  "name": "unibase",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "icons": "node scripts/optimize-icons.mjs",
+    "compile": "forge build",
+    "test:contracts": "forge test",
+    "deploy:sepolia": "bash scripts/deploy-contracts.sh base_sepolia",
+    "deploy:base": "bash scripts/deploy-contracts.sh base"
+  },
+  "dependencies": {
+    "@base-org/account": "^2.5.6",
+    "@farcaster/frame-sdk": "^0.2.0",
+    "@farcaster/miniapp-core": "^0.6.0",
+    "@tanstack/react-query": "^5.100.9",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sharp": "^0.34.5",
+    "viem": "^2.49.3",
+    "wagmi": "^3.6.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

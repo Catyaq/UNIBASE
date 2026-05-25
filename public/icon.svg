@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="UNIBASE">
+  <defs>
+    <linearGradient id="pink" x1="20%" y1="90%" x2="80%" y2="10%">
+      <stop offset="0%" stop-color="#FF007A"/>
+      <stop offset="100%" stop-color="#FF4D94"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="58%" r="42%">
+      <stop offset="0%" stop-color="#FF007A" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#FF007A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="#131313"/>
+  <rect
+    x="24"
+    y="24"
+    width="464"
+    height="464"
+    rx="96"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-opacity="0.06"
+    stroke-width="2"
+  />
+
+  <circle cx="256" cy="280" r="190" fill="url(#glow)"/>
+
+  <!-- Base platform -->
+  <rect x="164" y="368" width="184" height="12" rx="6" fill="#FF007A" opacity="0.28"/>
+  <rect x="188" y="384" width="136" height="8" rx="4" fill="#FF007A" opacity="0.45"/>
+
+  <!-- Bold U monogram -->
+  <path
+    fill="url(#pink)"
+    d="M168 152h56v128c0 36.6 29.4 66 66 66s66-29.4 66-66V152h56v128c0 67.7-54.3 122-122 122s-122-54.3-122-122V152z"
+  />
+
+  <!-- Swap swoosh accent -->
+  <path
+    d="M132 196c48-36 104-36 152 0"
+    fill="none"
+    stroke="#FF6FA3"
+    stroke-width="10"
+    stroke-linecap="round"
+    opacity="0.55"
+  />
+</svg>
