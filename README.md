@@ -1,4 +1,4 @@
-# UNIBASE123
+# UNIBASE12
 
 Base mini app: GM, token deploy, and milestone badge NFTs.
 
