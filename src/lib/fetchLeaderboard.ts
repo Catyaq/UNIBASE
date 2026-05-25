@@ -1,9 +1,4 @@
-import {
-  createPublicClient,
-  http,
-  type Address,
-  type PublicClient,
-} from "viem";
+import { createPublicClient, http, type Address } from "viem";
 import { base } from "viem/chains";
 
 import {
@@ -42,6 +37,8 @@ function createBaseClient() {
   });
 }
 
+type BasePublicClient = ReturnType<typeof createBaseClient>;
+
 async function getContractEventsChunked<
   TEventName extends "GM" | "TokenDeployed",
 >({
@@ -49,14 +46,14 @@ async function getContractEventsChunked<
   eventName,
   fromBlock,
 }: {
-  client: PublicClient;
+  client: BasePublicClient;
   eventName: TEventName;
   fromBlock: bigint;
 }) {
   const latest = await client.getBlockNumber();
   const start = fromBlock > latest ? latest : fromBlock;
   const all: Awaited<
-    ReturnType<PublicClient["getContractEvents"]>
+    ReturnType<BasePublicClient["getContractEvents"]>
   > = [];
 
   for (let chunkStart = start; chunkStart <= latest; chunkStart += LOG_CHUNK_SIZE) {
@@ -98,7 +95,12 @@ export async function fetchLeaderboard(): Promise<{
     }),
   ]);
 
-  const entries = withRanks(buildLeaderboardFromEvents(gmLogs, deployLogs));
+  const entries = withRanks(
+    buildLeaderboardFromEvents(
+      gmLogs as Parameters<typeof buildLeaderboardFromEvents>[0],
+      deployLogs as Parameters<typeof buildLeaderboardFromEvents>[1],
+    ),
+  );
 
   if (entries.length > 0) {
     const reads = await client.multicall({
