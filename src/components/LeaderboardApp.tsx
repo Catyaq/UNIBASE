@@ -102,9 +102,15 @@ export function LeaderboardApp() {
         </div>
 
         {data?.error && (
-          <p className="uni-caption px-4 py-3 text-[var(--uni-critical)]">
-            {data.error}
-          </p>
+          <div className="px-4 py-4">
+            <p className="uni-body text-sm text-[var(--uni-critical)]">
+              {data.error}
+            </p>
+            <p className="uni-caption mt-2">
+              Tip: set <span className="uni-code">BASE_RPC_URL</span> in Vercel
+              (Alchemy or Infura), redeploy, then Refresh.
+            </p>
+          </div>
         )}
 
         {!loading && data?.configured && data.entries.length === 0 && (

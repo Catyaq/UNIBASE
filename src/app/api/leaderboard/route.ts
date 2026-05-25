@@ -1,10 +1,18 @@
+import { unstable_cache } from "next/cache";
+
 import { fetchLeaderboard } from "@/lib/fetchLeaderboard";
 
-export const revalidate = 30;
+const getCachedLeaderboard = unstable_cache(
+  async () => fetchLeaderboard(),
+  ["hub-leaderboard"],
+  { revalidate: 60 },
+);
+
+export const revalidate = 60;
 
 export async function GET() {
   try {
-    const { configured, entries } = await fetchLeaderboard();
+    const { configured, entries } = await getCachedLeaderboard();
     return Response.json({
       configured,
       entries,
@@ -15,7 +23,7 @@ export async function GET() {
       error instanceof Error ? error.message : "Failed to load leaderboard";
     return Response.json(
       { configured: true, entries: [], total: 0, error: message },
-      { status: 500 },
+      { status: 503 },
     );
   }
 }
