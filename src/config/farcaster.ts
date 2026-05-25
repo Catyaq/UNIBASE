@@ -4,6 +4,10 @@ import {
   CANONICAL_SITE_URL,
   getAppSplashUrl,
 } from "@/config/appAssets";
+import {
+  FARCASTER_BUTTON_TITLE,
+  FARCASTER_SPLASH_BACKGROUND_COLOR,
+} from "@/config/manifest";
 
 export const FARCASTER_APP_NAME = APP_NAME;
 
@@ -18,13 +22,13 @@ export function buildFcMiniAppEmbed(siteUrl: string = CANONICAL_SITE_URL) {
     version: "1",
     imageUrl: `${CANONICAL_SITE_URL}${APP_IMAGE_PATH}`,
     button: {
-      title: "Open",
+      title: FARCASTER_BUTTON_TITLE,
       action: {
         type: "launch_miniapp",
         name: FARCASTER_APP_NAME,
         url: origin,
         splashImageUrl: getAppSplashUrl(CANONICAL_SITE_URL),
-        splashBackgroundColor: "#131313",
+        splashBackgroundColor: FARCASTER_SPLASH_BACKGROUND_COLOR,
       },
     },
   };

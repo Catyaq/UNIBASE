@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
 
-import { APP_DESCRIPTION } from "@/config/app";
+import { APP_DESCRIPTION, BASE_APP_ID } from "@/config/app";
 import { APP_ICON_PATH, APP_IMAGE_PATH, CANONICAL_SITE_URL } from "@/config/appAssets";
 import { buildFcMiniAppEmbed, FARCASTER_APP_NAME } from "@/config/farcaster";
 import { getConfig } from "@/config/wagmi";
@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     images: [{ url: APP_IMAGE_PATH, width: 1200, height: 628 }],
   },
   other: {
+    "base:app_id": BASE_APP_ID,
     "fc:miniapp": fcMiniAppEmbed,
     "fc:frame": fcMiniAppEmbed,
   },

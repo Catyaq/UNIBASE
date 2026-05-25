@@ -7,12 +7,17 @@ import {
   getAppSplashUrl,
 } from "@/config/appAssets";
 
-/** Fill after Farcaster domain verification */
+/** Farcaster domain verification for unibase-iota.vercel.app */
 export const FARCASTER_ACCOUNT_ASSOCIATION = {
-  header: "",
-  payload: "",
-  signature: "",
+  header:
+    "eyJmaWQiOjc3NjU4OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEE1MmI2MTEzNTVlREIwRjFlNzFDMTUzMzczOTJmRUY3MzY1YkQ5NjgifQ",
+  payload: "eyJkb21haW4iOiJ1bmliYXNlLWlvdGEudmVyY2VsLmFwcCJ9",
+  signature:
+    "WXl00uzg4hABBhMkRaTldY1T8k/mA3KVylrFRGwnax9IvAZXr91lkTvUTdZ6lmRqEYQjsORg56MW5SAXzXO9Xhw=",
 } as const;
+
+export const FARCASTER_BUTTON_TITLE = "Check this out";
+export const FARCASTER_SPLASH_BACKGROUND_COLOR = "#eeccff";
 
 function buildMiniappMetadata(origin: string) {
   return {
@@ -22,9 +27,9 @@ function buildMiniappMetadata(origin: string) {
     iconUrl: getAppIconUrl(origin),
     imageUrl: getAppImageUrl(origin),
     heroImageUrl: getAppHeroUrl(origin),
-    buttonTitle: "Open",
+    buttonTitle: FARCASTER_BUTTON_TITLE,
     splashImageUrl: getAppSplashUrl(origin),
-    splashBackgroundColor: "#131313",
+    splashBackgroundColor: FARCASTER_SPLASH_BACKGROUND_COLOR,
     webhookUrl: `${origin}/api/webhook`,
     description: APP_DESCRIPTION,
     subtitle: APP_NAME,
