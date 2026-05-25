@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { isAddress, type Address } from "viem";
 
 import { isRankEligible, RANK_BADGES } from "@/config/badges";
@@ -8,6 +9,14 @@ import {
   signRankBadgeMint,
 } from "@/lib/signRankBadge";
 
+const getCachedLeaderboard = unstable_cache(
+  async () => fetchLeaderboard(),
+  ["hub-leaderboard-rank"],
+  { revalidate: 60 },
+);
+
+export const maxDuration = 60;
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("address");
@@ -17,7 +26,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const { configured, entries } = await fetchLeaderboard();
+    const { configured, entries } = await getCachedLeaderboard();
     if (!configured) {
       return Response.json({ configured: false, rank: null, badges: {} });
     }
@@ -64,13 +73,16 @@ export async function POST(request: Request) {
 
   if (!getRankSignerConfigured()) {
     return Response.json(
-      { error: "Rank signer not configured (BADGE_RANK_SIGNER_PRIVATE_KEY)" },
+      {
+        error:
+          "Rank signer key invalid in Vercel — must be private key for 0xB3279A9FBb649825Ca1bc5e23d191C275A3D6462 (0x + 64 hex chars, no quotes or spaces).",
+      },
       { status: 503 },
     );
   }
 
   try {
-    const { configured, entries } = await fetchLeaderboard();
+    const { configured, entries } = await getCachedLeaderboard();
     if (!configured) {
       return Response.json({ error: "Hub not configured" }, { status: 503 });
     }
@@ -90,10 +102,6 @@ export async function POST(request: Request) {
       badgeType,
       deadline,
     );
-
-    if (!signature) {
-      return Response.json({ error: "Signing failed" }, { status: 500 });
-    }
 
     return Response.json({
       signature,

@@ -97,6 +97,11 @@ export function BadgeCard({
         return;
       }
 
+      if (!json.signature.startsWith("0x")) {
+        setMintError("Invalid signature from server");
+        return;
+      }
+
       writeContract({
         address: BADGE_NFT_ADDRESS,
         abi: badgeNftAbi,
