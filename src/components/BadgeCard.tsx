@@ -17,6 +17,7 @@ import {
   DEPLOY_CHAIN_ID,
   badgeNftAbi,
 } from "@/config/badgeContract";
+import { RANK_SIGNER_ADDRESS } from "@/lib/signRankBadge";
 
 type BadgeCardProps = {
   badge: BadgeDefinition;
@@ -26,6 +27,7 @@ type BadgeCardProps = {
   currentCount?: bigint;
   userRank?: number | null;
   rankSignerReady?: boolean;
+  rankSignerReason?: string | null;
   disabled?: boolean;
   onMinted?: () => void;
 };
@@ -38,6 +40,7 @@ export function BadgeCard({
   currentCount,
   userRank,
   rankSignerReady = true,
+  rankSignerReason,
   disabled,
   onMinted,
 }: BadgeCardProps) {
@@ -233,8 +236,8 @@ export function BadgeCard({
       </div>
 
       {badge.mintMode === "rank" && !rankSignerReady && !minted && (
-        <p className="uni-caption w-full text-[10px] text-[var(--uni-critical)]">
-          Rank signer not configured
+        <p className="uni-caption w-full text-[10px] leading-snug text-[var(--uni-critical)]">
+          {rankSignerHint(rankSignerReason)}
         </p>
       )}
 
@@ -266,4 +269,19 @@ export function BadgeCard({
       )}
     </article>
   );
+}
+
+function rankSignerHint(reason: string | null | undefined): string {
+  switch (reason) {
+    case "missing":
+      return "Add BADGE_RANK_SIGNER_PRIVATE_KEY in Vercel, then redeploy.";
+    case "invalid_format":
+      return "Vercel key must be 0x + 64 hex (no spaces or quotes).";
+    case "invalid_key":
+      return "Invalid private key in Vercel — check and redeploy.";
+    case "wrong_wallet":
+      return `Vercel key must be the private key for ${RANK_SIGNER_ADDRESS.slice(0, 6)}…${RANK_SIGNER_ADDRESS.slice(-4)}, not another wallet.`;
+    default:
+      return "Rank signer not configured in Vercel.";
+  }
 }

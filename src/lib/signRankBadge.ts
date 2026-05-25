@@ -37,8 +37,59 @@ function getRankSignerAccount() {
   }
 }
 
+export type RankSignerStatus = {
+  configured: boolean;
+  reason?:
+    | "missing"
+    | "invalid_format"
+    | "invalid_key"
+    | "wrong_wallet";
+  expectedAddress?: typeof RANK_SIGNER_ADDRESS;
+};
+
+export function getRankSignerStatus(): RankSignerStatus {
+  const raw = process.env.BADGE_RANK_SIGNER_PRIVATE_KEY;
+  if (!raw?.trim()) {
+    return { configured: false, reason: "missing" };
+  }
+
+  const key = normalizePrivateKey(raw);
+  if (!key) {
+    return { configured: false, reason: "invalid_format" };
+  }
+
+  try {
+    const account = privateKeyToAccount(key);
+    if (account.address.toLowerCase() !== RANK_SIGNER_ADDRESS.toLowerCase()) {
+      return {
+        configured: false,
+        reason: "wrong_wallet",
+        expectedAddress: RANK_SIGNER_ADDRESS,
+      };
+    }
+    return { configured: true };
+  } catch {
+    return { configured: false, reason: "invalid_key" };
+  }
+}
+
 export function getRankSignerConfigured(): boolean {
-  return getRankSignerAccount() != null;
+  return getRankSignerStatus().configured;
+}
+
+export function rankSignerStatusMessage(status: RankSignerStatus): string {
+  switch (status.reason) {
+    case "missing":
+      return "Add BADGE_RANK_SIGNER_PRIVATE_KEY in Vercel, then redeploy.";
+    case "invalid_format":
+      return "Key must be 0x + 64 hex characters (no spaces or quotes).";
+    case "invalid_key":
+      return "Private key is not valid — check BADGE_RANK_SIGNER_PRIVATE_KEY in Vercel.";
+    case "wrong_wallet":
+      return `Key must be for rank signer ${status.expectedAddress ?? RANK_SIGNER_ADDRESS}, not another wallet.`;
+    default:
+      return "Rank signer ready.";
+  }
 }
 
 export function rankSignatureDeadline(): bigint {

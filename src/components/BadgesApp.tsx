@@ -217,6 +217,7 @@ export function BadgesApp() {
                     }
                     userRank={badge.userRank}
                     rankSignerReady={badge.rankSignerReady}
+                    rankSignerReason={badge.rankSignerReason}
                     disabled={disabled || isLoading}
                     onMinted={() => void refresh()}
                   />

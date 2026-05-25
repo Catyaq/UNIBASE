@@ -19,6 +19,7 @@ type RankStatusResponse = {
   configured: boolean;
   rank: number | null;
   signerConfigured?: boolean;
+  signerReason?: string | null;
   badges?: Record<number, { eligible: boolean; rank: number | null }>;
 };
 
@@ -150,6 +151,7 @@ export function useBadgeStatus() {
         canMint: eligible && !minted,
         userRank,
         rankSignerReady: rankStatus?.signerConfigured ?? false,
+        rankSignerReason: rankStatus?.signerReason ?? null,
       };
     });
   }, [mintedData, eligibilityById, rankStatus]);

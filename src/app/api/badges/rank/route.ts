@@ -5,6 +5,7 @@ import { isRankEligible, RANK_BADGES } from "@/config/badges";
 import { fetchLeaderboard, rankForAddress } from "@/lib/fetchLeaderboard";
 import {
   getRankSignerConfigured,
+  getRankSignerStatus,
   rankSignatureDeadline,
   signRankBadgeMint,
 } from "@/lib/signRankBadge";
@@ -42,10 +43,13 @@ export async function GET(request: Request) {
       };
     }
 
+    const signerStatus = getRankSignerStatus();
+
     return Response.json({
       configured: true,
       rank,
-      signerConfigured: getRankSignerConfigured(),
+      signerConfigured: signerStatus.configured,
+      signerReason: signerStatus.reason ?? null,
       badges,
     });
   } catch (error) {
