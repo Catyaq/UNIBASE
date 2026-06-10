@@ -261,6 +261,79 @@ body {
   border-radius: var(--uni-radius-md);
 }
 
+.uni-btn-inline {
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* ── Connected wallet bar (compact home) ── */
+.uni-wallet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--uni-radius-lg);
+  border: 1px solid var(--uni-border);
+  background: var(--uni-bg-elevated);
+}
+
+.uni-wallet-bar-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.uni-wallet-bar-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--uni-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.uni-wallet-bar-address {
+  margin-top: 0.125rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--uni-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.uni-wallet-bar-change {
+  padding: 0.4375rem 0.75rem;
+  border-radius: var(--uni-radius-pill);
+  border: 1px solid var(--uni-border-strong);
+  background: var(--uni-surface-2);
+  color: var(--uni-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.uni-wallet-bar-change:hover {
+  background: var(--uni-surface-3);
+  color: var(--uni-text);
+}
+
+.uni-wallet-picker-label {
+  margin-bottom: 0.375rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--uni-text-secondary);
+}
+
 .uni-btn-pill {
   border-radius: var(--uni-radius-pill);
 }

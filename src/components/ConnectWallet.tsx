@@ -71,22 +71,23 @@ export function ConnectWallet({ compact = false }: ConnectWalletProps) {
 
   if (isConnected && !showPicker) {
     if (compact) {
+      const walletLabel =
+        user?.username && inMiniApp
+          ? `@${user.username}`
+          : (connector?.name ?? "Wallet");
+
       return (
-        <div className="flex w-full items-center gap-2">
-          <div className="uni-card-inset min-w-0 flex-1 px-2.5 py-2">
-            <p className="uni-label truncate text-[0.625rem]">
-              {user?.username && inMiniApp
-                ? `@${user.username}`
-                : (connector?.name ?? "Wallet")}
-            </p>
-            <p className="uni-mono truncate text-sm font-medium text-[var(--uni-text)]">
+        <div className="uni-wallet-bar">
+          <div className="uni-wallet-bar-info">
+            <p className="uni-wallet-bar-label">{walletLabel}</p>
+            <p className="uni-wallet-bar-address">
               {address?.slice(0, 6)}…{address?.slice(-4)}
             </p>
           </div>
           <button
             type="button"
             onClick={() => handleDisconnect({ openPicker: true })}
-            className="uni-btn uni-btn-secondary uni-btn-sm shrink-0"
+            className="uni-wallet-bar-change"
           >
             Change
           </button>
@@ -127,7 +128,13 @@ export function ConnectWallet({ compact = false }: ConnectWalletProps) {
 
   return (
     <div className={`flex w-full flex-col ${compact ? "gap-2" : "gap-3"}`}>
-      <p className={`uni-label text-center ${compact ? "text-[0.6875rem]" : ""}`}>
+      <p
+        className={
+          compact
+            ? "uni-wallet-picker-label"
+            : "uni-label text-center"
+        }
+      >
         {showPicker ? "Select a wallet" : "Connect wallet"}
       </p>
 
@@ -158,7 +165,7 @@ export function ConnectWallet({ compact = false }: ConnectWalletProps) {
         <button
           type="button"
           onClick={() => setShowPicker(false)}
-          className="uni-btn uni-btn-ghost w-full"
+          className={`uni-btn uni-btn-ghost ${compact ? "uni-btn-inline mx-auto" : "w-full"}`}
         >
           Cancel
         </button>
