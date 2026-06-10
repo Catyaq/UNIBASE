@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="UNIBASE">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1018"/>
+      <stop offset="55%" stop-color="#131313"/>
+      <stop offset="100%" stop-color="#131313"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="22%" cy="50%" r="48%">
+      <stop offset="0%" stop-color="#FF007A" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#FF007A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pink" x1="20%" y1="90%" x2="80%" y2="10%">
+      <stop offset="0%" stop-color="#FF007A"/>
+      <stop offset="100%" stop-color="#FF4D94"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <ellipse cx="980" cy="120" rx="220" ry="120" fill="#FF007A" opacity="0.08" filter="url(#soft)"/>
+
+  <!-- App icon -->
+  <g transform="translate(96 155)">
+    <rect width="320" height="320" rx="70" fill="#131313"/>
+    <rect x="14" y="14" width="292" height="292" rx="58" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+    <circle cx="160" cy="175" r="118" fill="#FF007A" opacity="0.12"/>
+    <rect x="102" y="230" width="116" height="8" rx="4" fill="#FF007A" opacity="0.28"/>
+    <rect x="118" y="246" width="84" height="5" rx="2.5" fill="#FF007A" opacity="0.45"/>
+    <path fill="url(#pink)" d="M104 95h37v85c0 24.4 19.6 44 44 44s44-19.6 44-44V95h37v85c0 45.1-36.1 81.5-81.5 81.5S104 225.1 104 180V95z"/>
+    <path d="M87 124c32-24 69-24 101 0" fill="none" stroke="#FF6FA3" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Copy -->
+  <text x="470" y="248" fill="#FFFFFF" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="88" font-weight="700" letter-spacing="-2">UNIBASE</text>
+  <text x="472" y="318" fill="#9B9B9B" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="500">GM, deploy &amp; earn badges on Base</text>
+
+  <!-- Accent chips -->
+  <g font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" font-weight="600">
+    <rect x="472" y="360" width="88" height="44" rx="22" fill="rgba(255,0,122,0.14)" stroke="rgba(255,0,122,0.35)" stroke-width="1.5"/>
+    <text x="516" y="388" fill="#FF007A" text-anchor="middle">GM</text>
+
+    <rect x="576" y="360" width="108" height="44" rx="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+    <text x="630" y="388" fill="#FFFFFF" text-anchor="middle">Deploy</text>
+
+    <rect x="700" y="360" width="108" height="44" rx="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+    <text x="754" y="388" fill="#FFFFFF" text-anchor="middle">Badges</text>
+  </g>
+
+  <!-- Mini UI card -->
+  <g transform="translate(470 430)">
+    <rect width="560" height="120" rx="24" fill="#1F1F1F" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <rect x="24" y="24" width="512" height="72" rx="18" fill="#131313"/>
+    <rect x="40" y="44" width="220" height="32" rx="16" fill="#FF007A"/>
+    <text x="150" y="67" fill="#FFFFFF" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="18" font-weight="700" text-anchor="middle">GM - Free</text>
+    <text x="420" y="67" fill="#9B9B9B" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="18" font-weight="500" text-anchor="middle">+10 pts</text>
+  </g>
+</svg>

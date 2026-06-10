@@ -24,7 +24,8 @@ export const CANONICAL_SITE_URL = resolveCanonicalSiteUrl();
 export const APP_ICON_PATH = "/icon.png";
 export const APP_SPLASH_PATH = "/splash.png";
 export const APP_IMAGE_PATH = "/image.png";
-export const APP_HERO_PATH = "/image.png";
+export const APP_HERO_PATH = "/thumbnail.png";
+export const APP_THUMBNAIL_PATH = "/thumbnail.png";
 
 export function getSiteOrigin(requestHost?: string | null) {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");

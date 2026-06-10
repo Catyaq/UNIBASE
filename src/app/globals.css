@@ -107,6 +107,16 @@ body {
 }
 
 /* ── Airdrop callout (home hero) ── */
+.uni-airdrop-callout-compact {
+  padding: 0.5rem 0.75rem;
+  max-width: none;
+}
+
+.uni-airdrop-callout-compact .uni-airdrop-text {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
 .uni-airdrop-callout {
   margin-inline: auto;
   max-width: 22rem;
@@ -204,6 +214,11 @@ body {
   background: var(--uni-pink);
   color: #fff;
   box-shadow: 0 0 0 0 transparent;
+}
+
+.uni-btn-hero {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.0625rem;
 }
 
 .uni-btn-primary:hover:not(:disabled) {

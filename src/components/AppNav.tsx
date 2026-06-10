@@ -16,9 +16,9 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="uni-card mb-3 flex items-center justify-between gap-3 px-4 py-3">
-      <Link href="/" className="flex min-w-0 items-center gap-2.5 no-underline">
-        <AppLogo size={36} />
+    <nav className="uni-card mb-1 flex items-center justify-between gap-2 px-3 py-2">
+      <Link href="/" className="flex min-w-0 items-center gap-2 no-underline">
+        <AppLogo size={32} />
         <span className="uni-heading truncate text-base text-[var(--uni-text)]">
           {APP_NAME}
         </span>

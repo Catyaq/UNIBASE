@@ -31,11 +31,14 @@ await writePng(
   await sharp(base).resize(512, 512).toBuffer(),
   path.join(publicDir, "splash.png"),
 );
-await writePng(
-  await sharp(base)
-    .resize(1200, 800, { fit: "contain", background: "#131313" })
-    .toBuffer(),
-  path.join(publicDir, "image.png"),
-);
+
+const thumbnailSource = path.join(publicDir, "thumbnail.svg");
+const thumbnail = await sharp(thumbnailSource)
+  .resize(1200, 630, { fit: "fill" })
+  .png({ compressionLevel: 9, palette: false })
+  .toBuffer();
+
+await writePng(thumbnail, path.join(publicDir, "thumbnail.png"));
+await writePng(thumbnail, path.join(publicDir, "image.png"));
 
 console.log("Icons written to public/");

@@ -13,7 +13,27 @@ import { useFarcasterMiniApp } from "@/hooks/useFarcasterMiniApp";
 
 const WALLET_USER_DISCONNECTED_KEY = `${APP_SLUG}_wallet_disconnected`;
 
-export function ConnectWallet() {
+function getConnectableWallets(connectors: ReturnType<typeof useConnectors>) {
+  const farcasterConnector = connectors.find((c) => c.id === "farcaster");
+  const hasBaseAccount = connectors.some((c) => c.id === "baseAccount");
+
+  const extensionConnectors = connectors.filter((c) => {
+    if (c.id === "farcaster") return false;
+    if (!hasBaseAccount) return true;
+    // baseAccount already covers Base wallet; hide duplicate injected entries.
+    if (c.id === "base" || c.name === "Base") return false;
+    if (c.id === "injected") return false;
+    return true;
+  });
+
+  return { farcasterConnector, extensionConnectors };
+}
+
+type ConnectWalletProps = {
+  compact?: boolean;
+};
+
+export function ConnectWallet({ compact = false }: ConnectWalletProps) {
   const { address, isConnected, isConnecting, isReconnecting, connector } =
     useAccount();
   const { connect, isPending } = useConnect();
@@ -22,8 +42,8 @@ export function ConnectWallet() {
   const { inMiniApp, user } = useFarcasterMiniApp();
   const [showPicker, setShowPicker] = useState(false);
 
-  const farcasterConnector = connectors.find((c) => c.id === "farcaster");
-  const extensionConnectors = connectors.filter((c) => c.id !== "farcaster");
+  const { farcasterConnector, extensionConnectors } =
+    getConnectableWallets(connectors);
 
   const handleDisconnect = (opts?: { openPicker?: boolean }) => {
     if (typeof window !== "undefined") {
@@ -33,8 +53,8 @@ export function ConnectWallet() {
     setShowPicker(opts?.openPicker ?? false);
   };
 
-  const handleConnect = (connectorId: string) => {
-    const target = connectors.find((c) => c.id === connectorId);
+  const handleConnect = (connectorUid: string) => {
+    const target = connectors.find((c) => c.uid === connectorUid);
     if (!target) return;
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(WALLET_USER_DISCONNECTED_KEY);
@@ -50,6 +70,30 @@ export function ConnectWallet() {
   }
 
   if (isConnected && !showPicker) {
+    if (compact) {
+      return (
+        <div className="flex w-full items-center gap-2">
+          <div className="uni-card-inset min-w-0 flex-1 px-2.5 py-2">
+            <p className="uni-label truncate text-[0.625rem]">
+              {user?.username && inMiniApp
+                ? `@${user.username}`
+                : (connector?.name ?? "Wallet")}
+            </p>
+            <p className="uni-mono truncate text-sm font-medium text-[var(--uni-text)]">
+              {address?.slice(0, 6)}…{address?.slice(-4)}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleDisconnect({ openPicker: true })}
+            className="uni-btn uni-btn-secondary uni-btn-sm shrink-0"
+          >
+            Change
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="flex w-full flex-col items-center gap-4">
         {user?.username && inMiniApp && (
@@ -82,15 +126,15 @@ export function ConnectWallet() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <p className="uni-label text-center">
+    <div className={`flex w-full flex-col ${compact ? "gap-2" : "gap-3"}`}>
+      <p className={`uni-label text-center ${compact ? "text-[0.6875rem]" : ""}`}>
         {showPicker ? "Select a wallet" : "Connect wallet"}
       </p>
 
       {inMiniApp && farcasterConnector && (
         <button
           type="button"
-          onClick={() => handleConnect("farcaster")}
+          onClick={() => handleConnect(farcasterConnector.uid)}
           disabled={isConnecting || isPending}
           className="uni-btn uni-btn-primary"
         >
@@ -102,12 +146,11 @@ export function ConnectWallet() {
         <button
           key={c.uid}
           type="button"
-          onClick={() => handleConnect(c.id)}
+          onClick={() => handleConnect(c.uid)}
           disabled={isConnecting || isPending}
           className="uni-btn uni-btn-secondary"
         >
           {c.name}
-          {c.id === "injected" ? " (browser)" : ""}
         </button>
       ))}
 

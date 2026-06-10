@@ -91,25 +91,12 @@ export function GmPanel({ disabled }: GmPanelProps) {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <div className="grid grid-cols-2 gap-2">
-        <Stat label="Your GMs" value={gmCount?.toString() ?? "0"} />
-        <Stat label="Points" value={points?.toString() ?? "0"} />
-        <Stat
-          label="Free today"
-          value={`${freeLeft}/${FREE_GM_PER_DAY}`}
-        />
-        <Stat
-          label="Per GM"
-          value={`+${POINTS_RULES.freeGm} / +${POINTS_RULES.paidGm}`}
-        />
-      </div>
-
+    <div className="flex w-full flex-col gap-2">
       <button
         type="button"
         onClick={handleGm}
         disabled={disabled || !canGm || isPending || isConfirming}
-        className="uni-btn uni-btn-primary"
+        className="uni-btn uni-btn-primary uni-btn-hero"
       >
         {!canGm
           ? `Wait ${secondsLeft}s`
@@ -127,6 +114,16 @@ export function GmPanel({ disabled }: GmPanelProps) {
           ? `Paid GM · +${POINTS_RULES.paidGm} pts`
           : `Free GM · +${POINTS_RULES.freeGm} pts · ${freeLeft} left today`}
       </p>
+
+      <div className="grid grid-cols-4 gap-1.5">
+        <Stat label="GMs" value={gmCount?.toString() ?? "0"} />
+        <Stat label="Pts" value={points?.toString() ?? "0"} />
+        <Stat label="Free" value={`${freeLeft}/${FREE_GM_PER_DAY}`} />
+        <Stat
+          label="Earn"
+          value={`+${POINTS_RULES.freeGm}/${POINTS_RULES.paidGm}`}
+        />
+      </div>
 
       {writeError && (
         <p className="uni-caption text-center text-[var(--uni-critical)]">
@@ -157,9 +154,9 @@ export function GmPanel({ disabled }: GmPanelProps) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="uni-card-inset px-3 py-2.5">
-      <p className="uni-label">{label}</p>
-      <p className="uni-mono mt-0.5 text-lg font-semibold text-[var(--uni-text)]">
+    <div className="uni-card-inset px-2 py-1.5 text-center">
+      <p className="uni-label text-[0.625rem]">{label}</p>
+      <p className="uni-mono mt-0.5 text-sm font-semibold text-[var(--uni-text)]">
         {value}
       </p>
     </div>

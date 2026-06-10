@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
-import { APP_DESCRIPTION, APP_NAME } from "@/config/app";
 import { AppNav } from "@/components/AppNav";
 import { ConnectWallet } from "@/components/ConnectWallet";
 import { DeployPanel } from "@/components/DeployPanel";
@@ -32,7 +31,6 @@ export function HomeApp() {
     deployCount,
     freeDeployAvailable,
     deployFeeOnChain,
-    points,
     refreshStats,
   } = useHubStats();
 
@@ -43,106 +41,89 @@ export function HomeApp() {
     <>
       <AppNav />
 
-      <header className="uni-card px-5 py-5 text-center">
-        <p className="uni-eyebrow">
-          {inMiniApp ? "Farcaster" : "Web"} · Base
+      <div className="uni-airdrop-callout uni-airdrop-callout-compact">
+        <p className="uni-airdrop-text">
+          More points = bigger <span className="uni-text-accent font-semibold">$UB</span> airdrop
+          {inMiniApp ? " · Farcaster" : " · Web"} · Base
         </p>
-        <h1 className="uni-title mt-2 text-3xl">{APP_NAME}</h1>
-        <p className="uni-body mt-2 text-sm">{APP_DESCRIPTION}</p>
-        <div className="uni-airdrop-callout mt-4">
-          <p className="uni-airdrop-text">
-            More points = Bigger{" "}
-            <span className="uni-text-accent font-semibold">$UB</span> airdrop.
-            Simple as that.
-          </p>
-        </div>
-      </header>
+      </div>
 
       {!hubReady && (
-        <div className="uni-card uni-card-critical px-4 py-4">
+        <div className="uni-card uni-card-critical px-3 py-2.5">
           <p className="uni-label text-[var(--uni-critical)]">Hub not configured</p>
-          <p className="uni-caption mt-2">
+          <p className="uni-caption mt-1">
             Deploy <span className="uni-code">Hub.sol</span> and set{" "}
             <span className="uni-code">HUB_CONTRACT_ADDRESS</span>.
           </p>
         </div>
       )}
 
-      <div className="uni-card px-4 py-5">
-        <ConnectWallet />
+      <div className="uni-card px-3 py-3">
+        <ConnectWallet compact />
+
+        {wrongChain && (
+          <button
+            type="button"
+            className="uni-btn uni-btn-primary mt-2"
+            disabled={isSwitching}
+            onClick={() => switchChain({ chainId: DEPLOY_CHAIN_ID })}
+          >
+            {isSwitching ? "Switching…" : "Switch to Base"}
+          </button>
+        )}
+
+        {hubReady && isConnected && !wrongChain && (
+          <>
+            <div className="uni-tabs mt-3 mb-2">
+              <button
+                type="button"
+                className={`uni-tab ${tab === "gm" ? "uni-tab-active" : ""}`}
+                onClick={() => setTab("gm")}
+              >
+                GM
+              </button>
+              <button
+                type="button"
+                className={`uni-tab ${tab === "deploy" ? "uni-tab-active" : ""}`}
+                onClick={() => setTab("deploy")}
+              >
+                Deploy
+              </button>
+            </div>
+
+            {tab === "gm" ? (
+              <GmPanel disabled={actionDisabled} />
+            ) : (
+              <DeployPanel
+                freeDeployAvailable={freeDeployAvailable}
+                deployFeeOnChain={deployFeeOnChain}
+                onSuccess={() => void refreshStats()}
+              />
+            )}
+          </>
+        )}
       </div>
-
-      {wrongChain && (
-        <button
-          type="button"
-          className="uni-btn uni-btn-primary"
-          disabled={isSwitching}
-          onClick={() => switchChain({ chainId: DEPLOY_CHAIN_ID })}
-        >
-          {isSwitching ? "Switching…" : "Switch to Base"}
-        </button>
-      )}
-
-      {hubReady && isConnected && !wrongChain && (
-        <div className="uni-card px-4 py-3 text-center">
-          <p className="uni-label">Total points</p>
-          <p className="uni-mono mt-1 text-2xl font-semibold uni-text-accent">
-            {points?.toString() ?? "0"}
-          </p>
-        </div>
-      )}
-
-      {hubReady && isConnected && !wrongChain && (
-        <div className="uni-card p-4">
-          <div className="uni-tabs mb-4">
-            <button
-              type="button"
-              className={`uni-tab ${tab === "gm" ? "uni-tab-active" : ""}`}
-              onClick={() => setTab("gm")}
-            >
-              GM
-            </button>
-            <button
-              type="button"
-              className={`uni-tab ${tab === "deploy" ? "uni-tab-active" : ""}`}
-              onClick={() => setTab("deploy")}
-            >
-              Deploy
-            </button>
-          </div>
-
-          {tab === "gm" ? (
-            <GmPanel disabled={actionDisabled} />
-          ) : (
-            <DeployPanel
-              freeDeployAvailable={freeDeployAvailable}
-              deployFeeOnChain={deployFeeOnChain}
-              onSuccess={() => void refreshStats()}
-            />
-          )}
-        </div>
-      )}
 
       {hubReady && (
         <PointsRulesCard />
       )}
 
-      {isBadgeContractConfigured && (
-        <Link href="/badges" className="uni-btn uni-btn-secondary block text-center">
-          View badges · GM & Deploy milestones
-        </Link>
-      )}
-
       {hubReady && (
-        <Link href="/leaderboard" className="uni-btn uni-btn-secondary block text-center">
-          Leaderboard · rank by points
-        </Link>
+        <div className="flex gap-2">
+          {isBadgeContractConfigured && (
+            <Link href="/badges" className="uni-btn uni-btn-secondary uni-btn-sm flex-1">
+              Badges
+            </Link>
+          )}
+          <Link href="/leaderboard" className="uni-btn uni-btn-secondary uni-btn-sm flex-1">
+            Leaderboard
+          </Link>
+        </div>
       )}
 
       {!isBadgeContractConfigured && hubReady && (
         <p className="uni-caption text-center">
-          Deploy <span className="uni-code">BadgeNFT.sol</span> and set{" "}
-          <span className="uni-code">BADGE_NFT_ADDRESS</span> for NFT badges.
+          Deploy <span className="uni-code">BadgeNFT.sol</span> for NFT badges.
         </p>
       )}
 
