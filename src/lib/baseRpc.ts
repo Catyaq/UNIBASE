@@ -23,9 +23,9 @@ export function createBasePublicClient() {
     transport: fallback(
       unique.map((url) =>
         http(url, {
-          timeout: 45_000,
-          retryCount: 2,
-          retryDelay: 400,
+          timeout: 15_000,
+          retryCount: 1,
+          retryDelay: 300,
         }),
       ),
       { rank: true },
