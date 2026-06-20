@@ -18,16 +18,7 @@ const WALLET_USER_DISCONNECTED_KEY = `${APP_SLUG}_wallet_disconnected`;
 
 function getConnectableWallets(connectors: ReturnType<typeof useConnectors>) {
   const farcasterConnector = connectors.find((c) => c.id === "farcaster");
-  const hasBaseAccount = connectors.some((c) => c.id === "baseAccount");
-
-  const extensionConnectors = connectors.filter((c) => {
-    if (c.id === "farcaster") return false;
-    if (!hasBaseAccount) return true;
-    // baseAccount already covers Base wallet; hide duplicate injected entries.
-    if (c.id === "base" || c.name === "Base") return false;
-    if (c.id === "injected") return false;
-    return true;
-  });
+  const extensionConnectors = connectors.filter((c) => c.id !== "farcaster");
 
   return { farcasterConnector, extensionConnectors };
 }
