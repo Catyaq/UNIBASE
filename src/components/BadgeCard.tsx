@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 
 import {
   BadgeIcon,
@@ -18,6 +18,7 @@ import {
   badgeNftAbi,
 } from "@/config/badgeContract";
 import { RANK_SIGNER_ADDRESS } from "@/lib/signRankBadge";
+import { useWriteContractWithBuilderCode } from "@/hooks/useWriteContractWithBuilderCode";
 
 type BadgeCardProps = {
   badge: BadgeDefinition;
@@ -48,7 +49,7 @@ export function BadgeCard({
   const [mintError, setMintError] = useState<string | null>(null);
 
   const { writeContract, data: hash, isPending, error, reset } =
-    useWriteContract();
+    useWriteContractWithBuilderCode();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,

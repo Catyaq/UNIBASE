@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useWaitForTransactionReceipt,
-  useWriteContract,
 } from "wagmi";
 import { formatEther } from "viem";
 
@@ -16,6 +15,7 @@ import {
 } from "@/config/contract";
 import { pointsForGm, POINTS_RULES } from "@/config/points";
 import { useHubStats } from "@/hooks/useHubStats";
+import { useWriteContractWithBuilderCode } from "@/hooks/useWriteContractWithBuilderCode";
 
 function explorerTxUrl(hash: string) {
   return `https://basescan.org/tx/${hash}`;
@@ -42,7 +42,7 @@ export function GmPanel({ disabled }: GmPanelProps) {
   } = useHubStats();
 
   const { data: hash, isPending, writeContract, error: writeError } =
-    useWriteContract();
+    useWriteContractWithBuilderCode();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,

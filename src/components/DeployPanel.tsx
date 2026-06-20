@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   useWaitForTransactionReceipt,
-  useWriteContract,
 } from "wagmi";
 import { formatEther, parseUnits } from "viem";
 
@@ -15,6 +14,7 @@ import {
 } from "@/config/contract";
 import { pointsForDeploy, POINTS_RULES } from "@/config/points";
 import { useHubStats } from "@/hooks/useHubStats";
+import { useWriteContractWithBuilderCode } from "@/hooks/useWriteContractWithBuilderCode";
 
 function explorerAddressUrl(address: string) {
   return `https://basescan.org/address/${address}`;
@@ -49,7 +49,7 @@ export function DeployPanel({
   const isPaidDeploy = !freeDeployAvailable;
 
   const { data: hash, isPending, writeContract, error: writeError, reset } =
-    useWriteContract();
+    useWriteContractWithBuilderCode();
 
   const { isLoading: isConfirming, isSuccess, data: receipt } =
     useWaitForTransactionReceipt({ hash });
