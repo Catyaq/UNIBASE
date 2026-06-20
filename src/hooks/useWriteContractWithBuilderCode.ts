@@ -3,14 +3,15 @@
 import { useCallback, useState } from "react";
 import {
   useAccount,
-  useSendCalls,
+  usePublicClient,
   useWriteContract,
 } from "wagmi";
 import { encodeFunctionData, type Abi, type Hex } from "viem";
 
 import { BUILDER_DATA_SUFFIX } from "@/config/builderCode";
 import { DEPLOY_CHAIN_ID } from "@/config/contract";
-import { resolveSendCallsTxHash } from "@/lib/resolveSendCallsTxHash";
+import { isDelegatedEoa } from "@/lib/isDelegatedEoa";
+import { sendSmartWalletWrite } from "@/lib/sendSmartWalletWrite";
 
 type ContractWriteRequest = {
   address: `0x${string}`;
@@ -23,18 +24,13 @@ type ContractWriteRequest = {
 
 const SMART_WALLET_CONNECTORS = new Set(["farcaster", "baseAccount"]);
 
-function usesSmartWalletPath(connectorId?: string) {
-  return connectorId != null && SMART_WALLET_CONNECTORS.has(connectorId);
-}
-
 /**
- * Farcaster / Base Account use EIP-7702-style wallets that strip ERC-8021
- * suffixes from eth_sendTransaction. Route those through wallet_sendCalls +
- * dataSuffix capability. Plain EOAs (MetaMask, etc.) use writeContract like FOUR.
+ * Farcaster / Base Account / EIP-7702 wallets strip ERC-8021 suffixes from
+ * eth_sendTransaction. Route those through wallet_sendCalls with tagged calldata.
  */
 export function useWriteContractWithBuilderCode() {
-  const { connector } = useAccount();
-  const { sendCallsAsync } = useSendCalls();
+  const { address, connector } = useAccount();
+  const publicClient = usePublicClient();
   const { writeContractAsync, reset: resetWrite } = useWriteContract();
 
   const [data, setData] = useState<Hex | undefined>();
@@ -50,39 +46,40 @@ export function useWriteContractWithBuilderCode() {
 
   const writeContractAsyncWithBuilder = useCallback(
     async (variables: ContractWriteRequest) => {
+      if (!address) {
+        throw new Error("Connect a wallet first.");
+      }
+
       setIsPending(true);
       setError(null);
       setData(undefined);
 
       const chainId = variables.chainId ?? DEPLOY_CHAIN_ID;
-      const smartWallet = usesSmartWalletPath(connector?.id);
+      const callData = encodeFunctionData({
+        abi: variables.abi as Abi,
+        functionName: variables.functionName,
+        args: variables.args,
+      });
 
       try {
-        if (smartWallet) {
-          const callData = encodeFunctionData({
-            abi: variables.abi as Abi,
-            functionName: variables.functionName,
-            args: variables.args,
-          });
+        const delegated =
+          SMART_WALLET_CONNECTORS.has(connector?.id ?? "") ||
+          (await isDelegatedEoa(publicClient, address));
 
-          const result = await sendCallsAsync({
+        if (delegated) {
+          if (!connector) {
+            throw new Error("Wallet connector unavailable.");
+          }
+
+          const hash = await sendSmartWalletWrite({
+            connector,
+            address,
             chainId,
-            calls: [
-              {
-                to: variables.address,
-                data: callData,
-                value: variables.value ?? 0n,
-              },
-            ],
-            capabilities: {
-              dataSuffix: {
-                value: BUILDER_DATA_SUFFIX,
-                optional: false,
-              },
-            },
+            to: variables.address,
+            callData,
+            value: variables.value,
           });
 
-          const hash = await resolveSendCallsTxHash(result.id, chainId);
           setData(hash);
           return hash;
         }
@@ -107,7 +104,7 @@ export function useWriteContractWithBuilderCode() {
         setIsPending(false);
       }
     },
-    [connector?.id, sendCallsAsync, writeContractAsync],
+    [address, connector, publicClient, writeContractAsync],
   );
 
   const writeContract = useCallback(

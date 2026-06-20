@@ -3,6 +3,7 @@ import { ChainNotConfiguredError, createConnector } from "wagmi";
 import { fromHex, getAddress, numberToHex, SwitchChainError } from "viem";
 
 import { withTimeout } from "@/lib/asyncTimeout";
+import { withBuilderAttribution } from "@/lib/builderAttributionProvider";
 
 const PROVIDER_REQUEST_TIMEOUT_MS = 4_000;
 
@@ -170,7 +171,9 @@ export function farcasterMiniApp() {
     },
 
     async getProvider() {
-      return sdk.wallet.ethProvider;
+      return withBuilderAttribution(
+        sdk.wallet.ethProvider as Parameters<typeof withBuilderAttribution>[0],
+      ) as MiniAppProvider;
     },
   }));
 }
