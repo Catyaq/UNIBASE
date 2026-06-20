@@ -3,9 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useWaitForTransactionReceipt,
+  useWriteContract,
 } from "wagmi";
 import { formatEther } from "viem";
 
+import { BUILDER_DATA_SUFFIX } from "@/config/builderCode";
 import {
   DEPLOY_CHAIN_ID,
   FREE_GM_PER_DAY,
@@ -15,7 +17,6 @@ import {
 } from "@/config/contract";
 import { pointsForGm, POINTS_RULES } from "@/config/points";
 import { useHubStats } from "@/hooks/useHubStats";
-import { useWriteContractWithBuilderCode } from "@/hooks/useWriteContractWithBuilderCode";
 
 function explorerTxUrl(hash: string) {
   return `https://basescan.org/tx/${hash}`;
@@ -42,7 +43,7 @@ export function GmPanel({ disabled }: GmPanelProps) {
   } = useHubStats();
 
   const { data: hash, isPending, writeContract, error: writeError } =
-    useWriteContractWithBuilderCode();
+    useWriteContract();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
@@ -87,6 +88,8 @@ export function GmPanel({ disabled }: GmPanelProps) {
       functionName: "gm",
       chainId: DEPLOY_CHAIN_ID,
       value: isPaidGm ? feeWei : BigInt(0),
+      // config.dataSuffix only applies to the public client; wallet txs need this explicitly
+      dataSuffix: BUILDER_DATA_SUFFIX,
     });
   };
 

@@ -10,19 +10,20 @@ export const chains = [base] as const;
 
 export const wagmiConfig = createConfig({
   chains: [...chains],
+  dataSuffix: BUILDER_DATA_SUFFIX,
   connectors: [
     farcasterMiniApp(),
     baseAccount({
       appName: APP_NAME,
     }),
     injected({ target: "metaMask" }),
+    injected(),
   ],
   storage: createStorage({ storage: cookieStorage }),
   ssr: true,
   transports: {
     [base.id]: http("https://mainnet.base.org"),
   },
-  dataSuffix: BUILDER_DATA_SUFFIX,
 });
 
 export function getConfig() {

@@ -3,9 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   useWaitForTransactionReceipt,
+  useWriteContract,
 } from "wagmi";
 import { formatEther, parseUnits } from "viem";
 
+import { BUILDER_DATA_SUFFIX } from "@/config/builderCode";
 import {
   DEPLOY_CHAIN_ID,
   DEPLOY_FEE_WEI,
@@ -14,7 +16,6 @@ import {
 } from "@/config/contract";
 import { pointsForDeploy, POINTS_RULES } from "@/config/points";
 import { useHubStats } from "@/hooks/useHubStats";
-import { useWriteContractWithBuilderCode } from "@/hooks/useWriteContractWithBuilderCode";
 
 function explorerAddressUrl(address: string) {
   return `https://basescan.org/address/${address}`;
@@ -49,7 +50,7 @@ export function DeployPanel({
   const isPaidDeploy = !freeDeployAvailable;
 
   const { data: hash, isPending, writeContract, error: writeError, reset } =
-    useWriteContractWithBuilderCode();
+    useWriteContract();
 
   const { isLoading: isConfirming, isSuccess, data: receipt } =
     useWaitForTransactionReceipt({ hash });
@@ -94,6 +95,7 @@ export function DeployPanel({
       args: [name, symbol, supply],
       chainId: DEPLOY_CHAIN_ID,
       value: isPaidDeploy ? feeWei : BigInt(0),
+      dataSuffix: BUILDER_DATA_SUFFIX,
     });
   };
 
