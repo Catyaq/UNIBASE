@@ -23,7 +23,37 @@ function withTaggedCalldata(data: Hex | undefined): Hex | undefined {
   return concat([data, BUILDER_DATA_SUFFIX]);
 }
 
-/** Ensure wallet_sendCalls batches carry ERC-8021 builder suffix in calldata. */
+function tagEthSendTransactionParams(params: unknown[] | undefined) {
+  const tx = (params?.[0] ?? {}) as { data?: Hex };
+  if (!tx.data) return params;
+  return [{ ...tx, data: withTaggedCalldata(tx.data) }];
+}
+
+function tagSendCallsParams(params: unknown[] | undefined) {
+  const batch = (params?.[0] ?? {}) as {
+    calls?: Array<{ data?: Hex; to?: Hex; value?: Hex }>;
+    capabilities?: Record<string, unknown>;
+  };
+
+  if (batch.calls) {
+    batch.calls = batch.calls.map((call) => ({
+      ...call,
+      data: withTaggedCalldata(call.data),
+    }));
+  }
+
+  batch.capabilities = {
+    ...batch.capabilities,
+    dataSuffix: {
+      value: BUILDER_DATA_SUFFIX,
+      optional: true,
+    },
+  };
+
+  return [batch];
+}
+
+/** Append ERC-8021 builder suffix to outgoing wallet transactions. */
 export function withBuilderAttribution<T extends ProviderLike>(provider: T): T {
   const request = provider.request.bind(provider);
 
@@ -31,27 +61,17 @@ export function withBuilderAttribution<T extends ProviderLike>(provider: T): T {
     ...provider,
     request: async (args: ProviderRequest) => {
       if (args.method === "wallet_sendCalls") {
-        const batch = (args.params?.[0] ?? {}) as {
-          calls?: Array<{ data?: Hex; to?: Hex; value?: Hex }>;
-          capabilities?: Record<string, unknown>;
-        };
+        return request({
+          ...args,
+          params: tagSendCallsParams(args.params),
+        });
+      }
 
-        if (batch.calls) {
-          batch.calls = batch.calls.map((call) => ({
-            ...call,
-            data: withTaggedCalldata(call.data),
-          }));
-        }
-
-        batch.capabilities = {
-          ...batch.capabilities,
-          dataSuffix: {
-            value: BUILDER_DATA_SUFFIX,
-            optional: true,
-          },
-        };
-
-        args = { ...args, params: [batch] };
+      if (args.method === "eth_sendTransaction") {
+        return request({
+          ...args,
+          params: tagEthSendTransactionParams(args.params),
+        });
       }
 
       return request(args);
