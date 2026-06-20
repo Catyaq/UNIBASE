@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "icons": "node scripts/optimize-icons.mjs",
+    "screenshots": "node scripts/optimize-screenshots.mjs",
     "compile": "forge build",
     "test:contracts": "forge test",
     "deploy:sepolia": "bash scripts/deploy-contracts.sh base_sepolia",

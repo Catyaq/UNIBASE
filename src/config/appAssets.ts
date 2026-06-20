@@ -27,6 +27,12 @@ export const APP_IMAGE_PATH = "/image.png";
 export const APP_HERO_PATH = "/thumbnail.png";
 export const APP_THUMBNAIL_PATH = "/thumbnail.png";
 
+export const APP_SCREENSHOT_PATHS = [
+  "/screenshots/screenshot-1-home.png",
+  "/screenshots/screenshot-2-badges.png",
+  "/screenshots/screenshot-3-milestones.png",
+] as const;
+
 export function getSiteOrigin(requestHost?: string | null) {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (fromEnv) return fromEnv;
@@ -62,4 +68,8 @@ export function getAppImageUrl(origin?: string) {
 
 export function getAppHeroUrl(origin?: string) {
   return appAsset(APP_HERO_PATH, origin);
+}
+
+export function getAppScreenshotUrls(origin?: string) {
+  return APP_SCREENSHOT_PATHS.map((path) => appAsset(path, origin));
 }
