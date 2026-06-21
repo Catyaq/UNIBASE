@@ -1,23 +1,31 @@
-import { APP_DESCRIPTION, APP_NAME, APP_TAGLINE } from "@/config/app";
+import {
+  APP_NAME,
+  FARCASTER_DESCRIPTION,
+  FARCASTER_SUBTITLE,
+} from "@/config/app";
 import {
   CANONICAL_SITE_URL,
   getAppHeroUrl,
   getAppIconUrl,
-  getAppImageUrl,
   getAppScreenshotUrls,
   getAppSplashUrl,
+  getAppThumbnailUrl,
 } from "@/config/appAssets";
 
-/** Farcaster domain verification for unibase-iota.vercel.app */
-export const FARCASTER_ACCOUNT_ASSOCIATION = {
+/** Domain verified at https://farcaster.xyz/~/developers/mini-apps/manifest */
+export const FARCASTER_ACCOUNT_ASSOCIATION: {
+  header: string;
+  payload: string;
+  signature: string;
+} = {
   header:
     "eyJmaWQiOjc3NjU4OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEE1MmI2MTEzNTVlREIwRjFlNzFDMTUzMzczOTJmRUY3MzY1YkQ5NjgifQ",
   payload: "eyJkb21haW4iOiJ1bmliYXNlLWlvdGEudmVyY2VsLmFwcCJ9",
   signature:
     "WXl00uzg4hABBhMkRaTldY1T8k/mA3KVylrFRGwnax9IvAZXr91lkTvUTdZ6lmRqEYQjsORg56MW5SAXzXO9Xhw=",
-} as const;
+};
 
-export const FARCASTER_BUTTON_TITLE = "Check this out";
+export const FARCASTER_BUTTON_TITLE = "Open app";
 export const FARCASTER_SPLASH_BACKGROUND_COLOR = "#eeccff";
 
 function shouldNoindex(origin: string): boolean {
@@ -31,32 +39,31 @@ function buildMiniappMetadata(origin: string) {
     name: APP_NAME,
     homeUrl: origin,
     iconUrl: getAppIconUrl(origin),
-    imageUrl: getAppImageUrl(origin),
+    imageUrl: getAppThumbnailUrl(origin),
     heroImageUrl: getAppHeroUrl(origin),
-    ogImageUrl: getAppHeroUrl(origin),
-    ogTitle: APP_NAME,
-    ogDescription: APP_DESCRIPTION,
     screenshotUrls: getAppScreenshotUrls(origin),
     buttonTitle: FARCASTER_BUTTON_TITLE,
     splashImageUrl: getAppSplashUrl(origin),
     splashBackgroundColor: FARCASTER_SPLASH_BACKGROUND_COLOR,
     webhookUrl: `${origin}/api/webhook`,
-    description: APP_DESCRIPTION,
-    subtitle: APP_NAME,
-    tagline: APP_TAGLINE,
+    description: FARCASTER_DESCRIPTION,
+    subtitle: FARCASTER_SUBTITLE,
     primaryCategory: "social",
-    tags: ["base", "miniapp", "gm", "badges"],
+    tags: ["base", "miniapp"],
+    requiredChains: ["eip155:8453"],
     ...(shouldNoindex(origin) ? { noindex: true as const } : {}),
   } as const;
 }
 
 export function buildFarcasterManifest() {
   const origin = CANONICAL_SITE_URL.replace(/\/$/, "");
-  const metadata = buildMiniappMetadata(origin);
+  const association = FARCASTER_ACCOUNT_ASSOCIATION;
+  const hasAssociation =
+    association.header && association.payload && association.signature;
 
   return {
-    accountAssociation: FARCASTER_ACCOUNT_ASSOCIATION,
-    miniapp: metadata,
-    frame: metadata,
+    ...(hasAssociation ? { accountAssociation: association } : {}),
+    frame: buildMiniappMetadata(origin),
+    miniapp: buildMiniappMetadata(origin),
   };
 }
