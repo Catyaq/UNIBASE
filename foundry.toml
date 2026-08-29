@@ -1,8 +1,4 @@
-[profile.default]
-src = "contracts/src"
-script = "contracts/script"
-test = "contracts/test"
-out = "contracts/out"
+
 libs = ["lib"]
 solc = "0.8.24"
 
