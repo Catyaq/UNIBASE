@@ -2,7 +2,7 @@ zz# UNIBASE
 z
 Base mini app: GM, token deploy, and milestone badge NFTs.z
 
-## Setup
+## Setupg
 
 ```bash
 npm install
