@@ -14,7 +14,7 @@ npm run dev
 - **/badges** — Mint NFT badges for GM, Deploy, points, and leaderboard rank
 - **/leaderboard** — All participants ranked by points
 
-## Deploy contracts (Base)
+## Deploy cont
 
 ### 1. Configure env
 
